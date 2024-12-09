@@ -1,0 +1,125 @@
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports 
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="VentaReport" language="java" pageWidth="595" pageHeight="842" columnWidth="555" 
+              columnSpacing="0" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <parameter name="idVenta" class="java.lang.Long"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT 
+                v.id_venta AS idVenta,
+                v.fecha_venta AS fechaVenta,
+                v.total_venta AS totalVenta,
+                c.id_cliente AS idCliente,
+                c.nombre AS clienteNombre,
+                c.correo AS clienteCorreo,
+                c.direccion AS clienteDireccion,
+                dv.id_detalle_venta AS idDetalleVenta,
+                dv.cantidad AS cantidad,
+                dv.precio_producto AS precioProducto,
+                dv.subtotal AS subtotal,
+                p.id_producto AS idProducto,
+                p.nombre AS productoNombre,
+                p.descripcion AS productoDescripcion,
+                p.precio AS precioProductoFinal
+            FROM 
+                venta v
+            INNER JOIN 
+                cliente c ON v.id_cliente = c.id_cliente
+            INNER JOIN 
+                detalle_venta dv ON v.id_venta = dv.id_venta
+            INNER JOIN 
+                producto p ON dv.id_producto = p.id_producto
+            WHERE 
+                v.id_venta = $P{idVenta}
+        ]]>
+    </queryString>
+
+    <field name="idVenta" class="java.lang.Long"/>
+    <field name="fechaVenta" class="java.util.Date"/>
+    <field name="totalVenta" class="java.lang.Double"/>
+    <field name="clienteNombre" class="java.lang.String"/>
+    <field name="clienteDireccion" class="java.lang.String"/>
+    <field name="clienteCorreo" class="java.lang.String"/>
+    <field name="idDetalleVenta" class="java.lang.Long"/>
+    <field name="productoNombre" class="java.lang.String"/>
+    <field name="productoDescripcion" class="java.lang.String"/>
+    <field name="precioProducto" class="java.lang.Double"/>
+    <field name="cantidad" class="java.lang.Integer"/>
+    <field name="subtotal" class="java.lang.Double"/>
+
+    <pageHeader>
+        <band height="80">
+            <textField>
+                <reportElement x="0" y="0" width="200" height="30"/>
+                <textFieldExpression><![CDATA["Venta ID: " + $F{idVenta}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="30" width="200" height="20"/>
+                <textFieldExpression><![CDATA["Fecha: " + $F{fechaVenta}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="50" width="300" height="20"/>
+                <textFieldExpression><![CDATA["Cliente: " + $F{clienteNombre} + " - " + $F{clienteDireccion} + " - " + $F{clienteCorreo}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+
+    <detail>
+        <band height="20">
+            <staticText>
+                <reportElement x="0" y="0" width="200" height="20"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA["Producto"]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="200" y="0" width="100" height="20"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA["Precio"]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="300" y="0" width="100" height="20"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA["Cantidad"]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="0" width="100" height="20"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA["Subtotal"]]></text>
+            </staticText>
+        </band>
+
+        <band height="20">
+            <textField>
+                <reportElement x="0" y="0" width="200" height="20"/>
+                <textFieldExpression><![CDATA[$F{productoNombre}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="200" y="0" width="100" height="20"/>
+                <textFieldExpression><![CDATA[$F{precioProducto}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="0" width="100" height="20"/>
+                <textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="0" width="100" height="20"/>
+                <textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- Total -->
+    <pageFooter>
+        <band height="50">
+            <textField>
+                <reportElement x="0" y="0" width="200" height="20"/>
+                <textFieldExpression><![CDATA["Total: " + $F{totalVenta}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+</jasperReport>
